@@ -1,0 +1,4 @@
+#ignorar las carpetas que hace meson al compilar
+bin/
+obj/
+build/
