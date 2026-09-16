@@ -25,7 +25,7 @@ public class ServidorProyecto1 {
 	TcpClient? s = null;
 	try {
 	    s = servidor.AcceptTcpClient();
-	    Console.WriteLine(%"Hola, conexión hecha.");
+	    Console.WriteLine($"Hola, conexión hecha.");
 	} catch (Exception) {
 	    Console.WriteLine("No se pudo conectar al servidor.");
 	}
