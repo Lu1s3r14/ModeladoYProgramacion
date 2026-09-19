@@ -21,10 +21,8 @@ public class Prueba {
 	} else {
 	    Console.WriteLine($"Al no recibir puerto, se utilizará el predeterminado (1234).");
 	}
-
-
 	
-	ServidorProyecto1 mini = new ServidorProyecto1(1234);
+	ServidorProyecto1 mini = new ServidorProyecto1(puerto);
 	mini.inicia();
     }
 }
