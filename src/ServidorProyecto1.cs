@@ -22,14 +22,12 @@ public class ServidorProyecto1 {
     }
 
     // Inicia el servidor y escucha en el puerto.
-    // Recibe una sola conexión, manda mensaje y se muere.
     public void inicia() {
 	servidor.Start();
 	Console.WriteLine($"Escuchando en el puerto {puerto}....");
-	TcpClient? s = null;
 	try {
 	    while (estado == true) {
-		s = servidor.AcceptTcpClient();
+		TcpClient s = servidor.AcceptTcpClient();
 		Console.WriteLine($"Hola, conexión hecha.");
 		Thread t = new Thread(() => nuevoCliente(s));
 		t.Start();
@@ -54,5 +52,10 @@ public class ServidorProyecto1 {
 	} finally {
 	    cliente.Close();
 	}
+    }
+
+    //Se procesa el mensaje por el tipo que se quiera hacer
+    public void ProcesaMensaje(Conexion conexion, MensajeProt mensaje) {
+	
     }
 }
