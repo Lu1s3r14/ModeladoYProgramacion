@@ -2,6 +2,7 @@ using System;
 using System.IO;
 using System.Net.Sockets;
 using System.Net;
+using System.Collections.Concurrent;
 
 /// Clase que recibe una sola conexión (por ahora)
 
@@ -11,6 +12,8 @@ public class ServidorProyecto1 {
     private TcpListener servidor;
     // El puerto de conexión .
     private int puerto;
+    //La lista de clientes.
+    private ConcurrentDictionary<string, Conexion> clientes;
     // El estado del servidor.
     private bool estado = false;
 
@@ -19,6 +22,7 @@ public class ServidorProyecto1 {
 	this.puerto = puerto;
 	servidor = new TcpListener(IPAddress.Any, puerto);
 	estado = true;
+	this.clientes = new ConcurrentDictionary<string, Conexion>();
     }
 
     // Inicia el servidor y escucha en el puerto.
@@ -56,6 +60,49 @@ public class ServidorProyecto1 {
 
     //Se procesa el mensaje por el tipo que se quiera hacer
     public void ProcesaMensaje(Conexion conexion, MensajeProt mensaje) {
-	
+	switch (mensaje.Tipo) {
+	    case MensajeServidor.IDENTIFY;
+	    identificarCleinte(conexion, mensaje);
+	    break;
+	    default:
+		Console.WriteLine("Accion no válida.");
+		braeak;
+	} 
+    }
+
+    //Realiza la identificacion de usuarios.
+    private void identificaCliente(Conexion conexion, MensajeProt mensaje) {
+	string? nombre = mensaje.Nombre;
+	if (string.IsNullOrEmpty(nombre)) {
+	    conexion.Desconecta();
+	    return;
+	}
+	if (clientes.TryAdd(nombre, conexion)) {
+	    MensajeProt agregado = new MensajeProt {
+		Tipo = MensajeServidor.RESPONSE,
+		Hacer = MensajeHacer.IDENTIFY,
+		Resultado = MensajeResultado.SUCCESS,
+		Extra = nombre
+	    };
+	    conexino.mandarMensaje(agregado);
+	    //Se notifica a los demas usuarios
+	    MensajeProt nuevoCleinte = new MensajeProt {
+		Nombre = nombre;
+	    };
+	    foreach (var usuario in clientes) {
+		if (usuario.Key != nombre) {
+		    usuario.Value.mandarMensaje(nuevoCliente);
+		}
+	    }
+	} else {
+	    MensajeProt noAgregado = new MensajeAgregado {
+		Tipo = MensajeServidor.RESPONSE,
+		Hacer = MensajeHacer.IDENTIFY,
+		Resultado = MensajeResultado.USER_ALREADY_EXISTS,
+		Extra = nombre
+	    };
+	    conexion.mandarMensaje(noAgregado);
+	    conexion.Desconecta();
+	}
     }
 }

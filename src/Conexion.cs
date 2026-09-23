@@ -46,6 +46,27 @@ public class Conexion {
 	}
     }
 
-    
-    
+    //Manda el mensaje al servidor despues de hacerlo en json
+    public void mandarMensaje(MensajeProt mensaje) {
+	if (estado==false)
+	    return;
+	try {
+	    string mensajeFinal = JsonSerializer.Serialize(mensaje);
+	    salida.WriteLine(mensajeFinal);
+	} catch (Exception) {
+	    Desconecta();
+	}
+    }
+
+    //Hace la desconexion de una conexion
+    public void Desconecta() {
+	if (estado==false)
+	    return;
+	this.estado = false;
+	try {
+	    entrada.Close();
+	    salida.Close();
+	    enchufe.Close();
+	} catch (Exception) {}
+    }   
 }
