@@ -55,9 +55,9 @@ public class ServidorProyecto1 {
     //Se procesa el mensaje por el tipo que se quiera hacer
     public void procesaMensaje(Conexion conexion, MensajeProt mensaje) {
 	switch (mensaje.Tipo) {
-	    case MensajeServidor.IDENTIFY;
-	    identificarCleinte(conexion, mensaje);
-	    break;
+	    case MensajeServidor.IDENTIFY:
+		identificarCleinte(conexion, mensaje);
+		break;
 	    default:
 		Console.WriteLine("Accion no válida.");
 		break;
@@ -78,9 +78,9 @@ public class ServidorProyecto1 {
 		Resultado = MensajeResultado.SUCCESS,
 		Extra = nombre
 	    };
-	    conexino.mandarMensaje(agregado);
+	    conexion.mandarMensaje(agregado);
 	    //Se notifica a los demas usuarios
-	    MensajeProt nuevoCleinte = new MensajeProt {
+	    MensajeProt nuevoCliente = new MensajeProt {
 		Nombre = nombre;
 	    };
 	    foreach (var usuario in clientes) {

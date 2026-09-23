@@ -26,7 +26,7 @@ public class MensajeProt {
     //Lo que se hace en el servidor.
     [JsonPropertyName("operation")]
     [JsonConverter(typeof(JsonStringEnumConverter))]
-    [JsonIgnore(Condition=JsongIgnoreCondition.WhenWritingNull)]
+    [JsonIgnore(Condition=JsonIgnoreCondition.WhenWritingNull)]
     public MensajeHacer? Hacer {
 	get;
 	set;

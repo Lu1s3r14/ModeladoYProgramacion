@@ -31,8 +31,8 @@ public class Conexion {
 	try {
 	    while (estado==true && (linea = entrada.ReadLine()) != null) {
 		try {
-		    MensajeProt? men = JsonSerializaer.Deserialize(linea);
-		    if (men != null) {
+		    MensajeProt? men = JsonSerializer.Deserialize(linea, JsonContext.Default.MensajeProt);
+		    if (men != null) 
 			servidor.procesaMensaje(this, men);
 		    }
 		} catch (Exception) {
@@ -51,7 +51,7 @@ public class Conexion {
 	if (estado==false)
 	    return;
 	try {
-	    string mensajeFinal = JsonSerializer.Serialize(mensaje);
+	    string mensajeFinal = JsonSerializer.Serialize(mensaje, JsonContext.Default.MensajeProt);
 	    salida.WriteLine(mensajeFinal);
 	} catch (Exception) {
 	    Desconecta();
