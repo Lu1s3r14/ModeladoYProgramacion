@@ -14,6 +14,10 @@ public class Conexion {
     private bool estado = false;
     //El enchufe de la conexion
     private TcpClient enchufe;
+    //El estado de un cliente/
+    private MensajeEstado estadoCliente;
+    //El nombre del cliente con el que se relacionara su status
+    private string? nombreCliente;
 
     //Crea la conexion de un cliente.
     public Conexion(TcpClient cliente) {
@@ -23,6 +27,7 @@ public class Conexion {
 	this.salida = new StreamWriter(flujo);
 	this.salida.AutoFlush = true;
 	this.estado = true;
+	this.estadoCliente = MensajeEstado.ACTIVE; //por defecto 
     }
 
     //Recibe mensajes de las conexiones
@@ -56,6 +61,26 @@ public class Conexion {
 	} catch (Exception) {
 	    Desconecta();
 	}
+    }
+
+    //Nos da el estado de un cliente
+    public MensajeEstado getEstado() {
+	return estadoCliente;
+    }
+
+    //Define el nuevo estado del cliente
+    public void setEstado(MensajeEstado status) {
+	estadoCliente = status;
+    }
+
+    //Nos da el nombre del cliente
+    public string? getNombre() {
+	return nombreCliente;
+    }
+
+    //Definimos el nombre del cliente
+    public void setNombre(string? name) {
+	nombreCliente = name;
     }
 
     //Hace la desconexion de una conexion

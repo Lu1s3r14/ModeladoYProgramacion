@@ -6,7 +6,9 @@
 public enum MensajeServidor {
     IDENTIFY,
     RESPONSE,
-    NEW_USER
+    NEW_USER,
+    STATUS,
+    NEW_STATUS
 }
 
 //Lo que queremos hacer en el servidor
@@ -18,4 +20,11 @@ public enum MensajeHacer {
 public enum MensajeResultado {
     SUCCESS,
     USER_ALREADY_EXISTS
+}
+
+//Los estados de un usuario
+public enum MensajeEstado {
+    ACTIVE,
+    AWAY,
+    BUSY
 }

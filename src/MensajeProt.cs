@@ -23,6 +23,15 @@ public class MensajeProt {
 	set;
     }
 
+    //El estado que un usuario tenga.
+    [JsonPropertyName("status")]
+    [JsonIgnore(Condition=JsonIgnoreCondition.WhenWritingNull)]
+    [JsonConverter(typeof(JsonStringEnumConverter))]
+    public MensajeEstado? Estado {
+	get;
+	set;
+    }
+
     //Lo que se hace en el servidor.
     [JsonPropertyName("operation")]
     [JsonConverter(typeof(JsonStringEnumConverter))]

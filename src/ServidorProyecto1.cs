@@ -58,6 +58,9 @@ public class ServidorProyecto1 {
 	    case MensajeServidor.IDENTIFY:
 		identificaCliente(conexion, mensaje);
 		break;
+	    case MensajeServidor.STATUS:
+		nuevoEstado(conexion, mensaje);
+		break;
 	    default:
 		Console.WriteLine("Accion no válida.");
 		break;
@@ -72,6 +75,7 @@ public class ServidorProyecto1 {
 	    return;
 	}
 	if (clientes.TryAdd(nombre, conexion)) {
+	    conexion.setNombre(nombre); //'conocer' quien es
 	    MensajeProt agregado = new MensajeProt {
 		Tipo = MensajeServidor.RESPONSE,
 		Hacer = MensajeHacer.IDENTIFY,
@@ -100,4 +104,24 @@ public class ServidorProyecto1 {
 	    conexion.Desconecta();
 	}
     }
+
+    //Hace el cambio de estado 'ACTIVE' por uno que se elija.
+    private void nuevoEstado(Conexion conexion, MensajeProt mensaje) {
+	string? clienteA = conexion.getNombre();
+	if (string.IsNullOrEmpty(clienteA))
+	    return; //no existiria el cliente
+	if (mensaje.Estado.HasValue && mensaje.Estado.Value != conexion.getEstado()){
+	    conexion.setEstado(mensaje.Estado.Value);
+	    MensajeProt cambio = new MensajeProt {
+		Tipo = MensajeServidor.NEW_STATUS,
+		Nombre = clienteA,
+		Estado = conexion.getEstado()
+	    };
+	    foreach (var usuario in clientes) {
+		if (usuario.Key != clienteA) {
+		    usuario.Value.mandarMensaje(cambio);
+		}
+	    }
+	}
+    }  
 }
