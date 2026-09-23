@@ -10,13 +10,16 @@ public enum MensajeServidor {
     STATUS,
     NEW_STATUS,
     USERS,
-    USER_LIST
+    USER_LIST,
+    TEXT,
+    TEXT_FROM
 }
 
 //Lo que queremos hacer en el servidor
 public enum MensajeHacer {
     IDENTIFY,
-    INVALID
+    INVALID,
+    TEXT
 }
 
 //El resultado de lo que hagamos en el servidor.
@@ -24,7 +27,8 @@ public enum MensajeResultado {
     SUCCESS,
     USER_ALREADY_EXISTS,
     NOT_IDENTIFIED,
-    INVALID
+    INVALID,
+    NO_SUCH_USER
 }
 
 //Los estados de un usuario

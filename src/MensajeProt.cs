@@ -49,6 +49,14 @@ public class MensajeProt {
 	set;
     }
 
+    //El texto que se quiera mandar
+    [JsonPropertyName("text")]
+    [JsonIgnore(Condition=JsonIgnoreCondition.WhenWritingNull)]
+    public string? Texto {
+	get;
+	set;
+    }
+
     //El resultado de lo que se hizo en el servidor.
     [JsonPropertyName("result")]
     [JsonConverter(typeof(JsonStringEnumConverter))]

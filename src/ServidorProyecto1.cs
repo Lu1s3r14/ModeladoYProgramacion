@@ -78,6 +78,9 @@ public class ServidorProyecto1 {
 	    case MensajeServidor.USERS:
 		mandarLista(conexion);
 		break;
+	    case MensajeServidor.TEXT:
+		mandarMensajes(conexion, mensaje);
+		break;
 	    default:
 		Console.WriteLine("Accion no válida.");
 		break;
@@ -156,6 +159,29 @@ public class ServidorProyecto1 {
 	    Clientes = lista
 	};
 	conexion.mandarMensaje(conectados);
+    }
+
+    //Se manda un texto a otro cliente
+    private void mandarMensajes(Conexion conexion, MensajeProt mensaje) {
+	string destino = mensaje.Nombre;
+	string texto = mensaje.Texto;
+	if (clientes.TryGetValue(destino, out Conexion? conexionFinal)) {
+	    MensajeProt privado = new MensajeProt {
+		Tipo = MensajeServidor.TEXT_FROM,
+		Nombre = conexion.getNombre(),
+		Texto = texto
+	    };
+	    conexionFinal.mandarMensaje(privado);
+	} else {
+	    MensajeProt muerto = new MensajeProt {
+		Tipo = MensajeServidor.RESPONSE,
+		Hacer = MensajeHacer.TEXT,
+		Resultado = MensajeResultado.NO_SUCH_USER,
+		Extra = destino
+	    };
+	    conexion.mandarMensaje(muerto);
+	}
+	
     }
 
     //Se desconecta un cliente del servidor (se borra de la lista)
