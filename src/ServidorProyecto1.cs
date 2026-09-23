@@ -54,12 +54,25 @@ public class ServidorProyecto1 {
 
     //Se procesa el mensaje por el tipo que se quiera hacer
     public void procesaMensaje(Conexion conexion, MensajeProt mensaje) {
+	if (string.IsNullOrEmpty(conexion.getNombre()) && mensaje.Tipo != MensajeServidor.IDENTIFY) {
+	    MensajeProt fallo = new MensajeProt {
+		Tipo = MensajeServidor.RESPONSE,
+		Hacer = MensajeHacer.INVALID,
+		Resultado = MensajeResultado.NOT_IDENTIFIED
+	    };
+	    conexion.mandarMensaje(fallo);
+	    conexion.Desconecta();
+	    return;
+	}
 	switch (mensaje.Tipo) {
 	    case MensajeServidor.IDENTIFY:
 		identificaCliente(conexion, mensaje);
 		break;
 	    case MensajeServidor.STATUS:
 		nuevoEstado(conexion, mensaje);
+		break;
+	    case MensajeServidor.USERS:
+		mandarLista(conexion);
 		break;
 	    default:
 		Console.WriteLine("Accion no válida.");
@@ -123,5 +136,21 @@ public class ServidorProyecto1 {
 		}
 	    }
 	}
-    }  
+    }
+
+    // Se manda la lista cuando se solicite
+    private void mandarLista(Conexion conexion) {
+	if (string.IsNullOrEmpty(conexion.getNombre()))
+	    return;
+	Dictionary<string, string> lista = new Dictionary<string, string>();
+	foreach (var cliente in clientes) { //Ver los clientes del diccionario original y agregarlos al nuevo
+	    string estado = cliente.Value.getEstado().ToString();
+	    lista.Add(cliente.Key, estado);
+	}
+	MensajeProt conectados = new MensajeProt {
+	    Tipo = MensajeServidor.USER_LIST,
+	    Clientes = lista
+	};
+	conexion.mandarMensaje(conectados);
+    }
 }

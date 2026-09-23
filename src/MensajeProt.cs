@@ -23,6 +23,14 @@ public class MensajeProt {
 	set;
     }
 
+    //Los clientes que esten conectados
+    [JsonPropertyName("users")]
+    [JsonIgnore(Condition=JsonIgnoreCondition.WhenWritingNull)]
+    public Dictionary<string, string>? Clientes {
+	get;
+	set;
+    }
+
     //El estado que un usuario tenga.
     [JsonPropertyName("status")]
     [JsonIgnore(Condition=JsonIgnoreCondition.WhenWritingNull)]
