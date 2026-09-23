@@ -5,7 +5,8 @@
 //Lo que recibe el servidor 
 public enum MensajeServidor {
     IDENTIFY,
-    RESPONSE
+    RESPONSE,
+    NEW_USER
 }
 
 //Lo que queremos hacer en el servidor

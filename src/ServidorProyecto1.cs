@@ -56,7 +56,7 @@ public class ServidorProyecto1 {
     public void procesaMensaje(Conexion conexion, MensajeProt mensaje) {
 	switch (mensaje.Tipo) {
 	    case MensajeServidor.IDENTIFY:
-		identificarCleinte(conexion, mensaje);
+		identificaCliente(conexion, mensaje);
 		break;
 	    default:
 		Console.WriteLine("Accion no válida.");
@@ -81,7 +81,8 @@ public class ServidorProyecto1 {
 	    conexion.mandarMensaje(agregado);
 	    //Se notifica a los demas usuarios
 	    MensajeProt nuevoCliente = new MensajeProt {
-		Nombre = nombre;
+		Tipo = MensajeServidor.NEW_USER,
+		Nombre = nombre
 	    };
 	    foreach (var usuario in clientes) {
 		if (usuario.Key != nombre) {
@@ -89,7 +90,7 @@ public class ServidorProyecto1 {
 		}
 	    }
 	} else {
-	    MensajeProt noAgregado = new MensajeAgregado {
+	    MensajeProt noAgregado = new MensajeProt {
 		Tipo = MensajeServidor.RESPONSE,
 		Hacer = MensajeHacer.IDENTIFY,
 		Resultado = MensajeResultado.USER_ALREADY_EXISTS,

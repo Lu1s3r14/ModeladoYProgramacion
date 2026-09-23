@@ -32,7 +32,7 @@ public class Conexion {
 	    while (estado==true && (linea = entrada.ReadLine()) != null) {
 		try {
 		    MensajeProt? men = JsonSerializer.Deserialize(linea, JsonContext.Default.MensajeProt);
-		    if (men != null) 
+		    if (men != null) {
 			servidor.procesaMensaje(this, men);
 		    }
 		} catch (Exception) {
