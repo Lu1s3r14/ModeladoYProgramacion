@@ -10,7 +10,7 @@ public class MensajeProt {
     //El tipo de accion que recibe el servidor
     [JsonPropertyName("type")]
     [JsonConverter(typeof(JsonStringEnumConverter))]
-    public MensajeServidor Tipo {
+    public MensajeServidor? Tipo {
 	get;
 	set;
     }

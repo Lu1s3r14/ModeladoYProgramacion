@@ -54,6 +54,10 @@ public class ServidorProyecto1 {
 
     //Se procesa el mensaje por el tipo que se quiera hacer
     public void procesaMensaje(Conexion conexion, MensajeProt mensaje) {
+	if (!mensaje.Tipo.HasValue) {
+	    mensajeInvalido(conexion);
+	    return;
+	}
 	if (string.IsNullOrEmpty(conexion.getNombre()) && mensaje.Tipo != MensajeServidor.IDENTIFY) {
 	    MensajeProt fallo = new MensajeProt {
 		Tipo = MensajeServidor.RESPONSE,
@@ -153,4 +157,25 @@ public class ServidorProyecto1 {
 	};
 	conexion.mandarMensaje(conectados);
     }
+
+    //Se desconecta un cliente del servidor (se borra de la lista)
+    public void desconectar(Conexion conexion) {
+	string? nombre = conexion.getNombre();
+	if (nombre != null) {
+	    clientes.TryRemove(nombre, out _); 
+	}
+    }
+
+     //La respuesta ante un mensaje invalido
+    public void mensajeInvalido(Conexion conexion) {
+	MensajeProt invalido = new MensajeProt {
+	    Tipo = MensajeServidor.RESPONSE,
+	    Hacer = MensajeHacer.INVALID,
+	    Resultado = MensajeResultado.INVALID
+	};
+	conexion.mandarMensaje(invalido);
+	desconectar(conexion);
+	conexion.Desconecta();
+    }
 }
+

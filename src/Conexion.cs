@@ -41,12 +41,13 @@ public class Conexion {
 			servidor.procesaMensaje(this, men);
 		    }
 		} catch (Exception) {
-		    Console.WriteLine("Mensaje no válido");
+		    servidor.mensajeInvalido(this);
 		}
 	    }
 	} catch (IOException) {
 	    Console.WriteLine("Conexion perdida");
 	} finally {
+	    servidor.desconectar(this);
 	    Desconecta();
 	}
     }
