@@ -12,7 +12,9 @@ public enum MensajeServidor {
     USERS,
     USER_LIST,
     TEXT,
-    TEXT_FROM
+    TEXT_FROM,
+    PUBLIC_TEXT,
+    PUBLIC_TEXT_FROM
 }
 
 //Lo que queremos hacer en el servidor

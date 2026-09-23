@@ -81,6 +81,9 @@ public class ServidorProyecto1 {
 	    case MensajeServidor.TEXT:
 		mandarMensajes(conexion, mensaje);
 		break;
+	    case MensajeServidor.PUBLIC_TEXT:
+		mandarPublico(conexion, mensaje);
+		break;
 	    default:
 		Console.WriteLine("Accion no válida.");
 		break;
@@ -182,6 +185,25 @@ public class ServidorProyecto1 {
 	    conexion.mandarMensaje(muerto);
 	}
 	
+    }
+
+    //Manda un mensaje a todos los clientes conectados.
+    private void mandarPublico(Conexion conexion, MensajeProt mensaje) {
+	string? text = mensaje.Texto;
+	//if (string.IsNullOrEmpty(text)) {
+	//  mensajeInvalido(conexion);
+	//  return;
+	//}
+	string? cliente = conexion.getNombre();
+	MensajeProt textoPublico = new MensajeProt {
+	    Tipo = MensajeServidor.PUBLIC_TEXT_FROM,
+	    Nombre = cliente,
+	    Texto = text
+	};
+	foreach (var usuario in clientes) {
+	    if (usuario.Key != cliente)
+		usuario.Value.mandarMensaje(textoPublico);
+	}
     }
 
     //Se desconecta un cliente del servidor (se borra de la lista)
