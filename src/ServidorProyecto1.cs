@@ -45,28 +45,22 @@ public class ServidorProyecto1 {
     //Metodo de prueba para atender a mas de 1 cliente.
     public void nuevoCliente(TcpClient cliente) {
 	try {
-	    NetworkStream flujo = cliente.GetStream();
-	    StreamReader lector = new StreamReader(flujo);
-	    StreamWriter marcador = new StreamWriter(flujo);
-	    //forzar la escritura en la terminal
-	    marcador.AutoFlush = true;
-	    marcador.WriteLine("Hola cliente nuevo");
+	    Conexion conexion = new Conexion(cliente);
+	    conexion.recibeMensaje(this);
 	} catch (Exception) {
-	    Console.WriteLine("No se pudo hacer una conexion");
-	} finally {
-	    cliente.Close();
+	    Console.WriteLine("No se pudo crear una conexinó");
 	}
     }
 
     //Se procesa el mensaje por el tipo que se quiera hacer
-    public void ProcesaMensaje(Conexion conexion, MensajeProt mensaje) {
+    public void procesaMensaje(Conexion conexion, MensajeProt mensaje) {
 	switch (mensaje.Tipo) {
 	    case MensajeServidor.IDENTIFY;
 	    identificarCleinte(conexion, mensaje);
 	    break;
 	    default:
 		Console.WriteLine("Accion no válida.");
-		braeak;
+		break;
 	} 
     }
 
