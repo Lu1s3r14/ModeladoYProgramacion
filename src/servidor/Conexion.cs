@@ -35,6 +35,8 @@ public class Conexion {
 	string linea;
 	try {
 	    while (estado==true && (linea = entrada.ReadLine()) != null) {
+		if (string.IsNullOrWhiteSpace(linea))
+		    continue;
 		try {
 		    MensajeProt? men = JsonSerializer.Deserialize(linea, JsonContext.Default.MensajeProt);
 		    if (men != null) {

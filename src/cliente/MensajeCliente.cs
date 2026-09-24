@@ -1,9 +1,9 @@
-/// Clase que tiene los distintos
-/// tipos de mensajes que da y recibe
-/// el servidor.
+///Clase que tiene los distintos
+///tipos de acciones que puede
+///hacer y recibir el cliente
 
-//Lo que recibe el servidor 
-public enum MensajeServidor {
+//Lo que recibe el cliente
+public enum MensajeCliente {
     IDENTIFY,
     RESPONSE,
     NEW_USER,
@@ -14,17 +14,20 @@ public enum MensajeServidor {
     TEXT,
     TEXT_FROM,
     PUBLIC_TEXT,
-    PUBLIC_TEXT_FROM
+    PUBLIC_TEXT_FROM,
+    DISCONNECT,
+    DISCONNECTED
 }
 
-//Lo que queremos hacer en el servidor
+//Lo que queremos hacer desde el cliente
 public enum MensajeHacer {
     IDENTIFY,
     INVALID,
-    TEXT
+    TEXT,
+    PUBLIC_TEXT,
 }
 
-//El resultado de lo que hagamos en el servidor.
+//El resultado del servidor hacia el cliente
 public enum MensajeResultado {
     SUCCESS,
     USER_ALREADY_EXISTS,
@@ -33,7 +36,7 @@ public enum MensajeResultado {
     NO_SUCH_USER
 }
 
-//Los estados de un usuario
+//Los estados disponibles
 public enum MensajeEstado {
     ACTIVE,
     AWAY,

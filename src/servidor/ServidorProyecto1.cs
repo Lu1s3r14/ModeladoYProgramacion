@@ -84,6 +84,9 @@ public class ServidorProyecto1 {
 	    case MensajeServidor.PUBLIC_TEXT:
 		mandarPublico(conexion, mensaje);
 		break;
+	    case MensajeServidor.DISCONNECT:
+		conexion.Desconecta();
+		break;
 	    default:
 		Console.WriteLine("Accion no válida.");
 		break;
@@ -93,8 +96,8 @@ public class ServidorProyecto1 {
     //Realiza la identificacion de usuarios.
     private void identificaCliente(Conexion conexion, MensajeProt mensaje) {
 	string? nombre = mensaje.Nombre;
-	if (string.IsNullOrEmpty(nombre)) {
-	    conexion.Desconecta();
+	if (string.IsNullOrEmpty(nombre) || nombre.Length>8) {
+	    mensajeInvalido(conexion);
 	    return;
 	}
 	if (clientes.TryAdd(nombre, conexion)) {
@@ -209,8 +212,14 @@ public class ServidorProyecto1 {
     //Se desconecta un cliente del servidor (se borra de la lista)
     public void desconectar(Conexion conexion) {
 	string? nombre = conexion.getNombre();
-	if (nombre != null) {
-	    clientes.TryRemove(nombre, out _); 
+	if (nombre != null && clientes.TryRemove(nombre, out _)) {
+	    MensajeProt desconectado = new MensajeProt {
+		Tipo = MensajeServidor.DISCONNECTED,
+		Nombre = nombre
+	    };
+	    foreach (var usuario in clientes) {
+		usuario.Value.mandarMensaje(desconectado);
+	    }
 	}
     }
 
