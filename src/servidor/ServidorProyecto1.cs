@@ -102,6 +102,9 @@ public class ServidorProyecto1 {
 	    case MensajeServidor.ROOM_USERS:
 		listaSala(conexion, mensaje);
 		break;
+	    case MensajeServidor.LEAVE_ROOM:
+		dejarSala(conexion, mensaje);
+		break;
 	    default:
 		Console.WriteLine("Accion no válida.");
 		break;
@@ -390,6 +393,44 @@ public class ServidorProyecto1 {
 	    Clientes = lista
 	};
 	conexion.mandarMensaje(listaFinal);
+    }
+
+    //Abandona una sala
+    private void dejarSala(Conexion conexion, MensajeProt mensaje) {
+	string? nombre = mensaje.NombreSala;
+	string? cliente = conexion.getNombre();
+	if (!salas.TryGetValue(nombre, out Sala? salaDestino)) {
+	    MensajeProt noSala = new MensajeProt {
+		Tipo = MensajeServidor.RESPONSE,
+		Hacer = MensajeHacer.LEAVE_ROOM,
+		Resultado = MensajeResultado.NO_SUCH_ROOM,
+		Extra = nombre
+	    };
+	    conexion.mandarMensaje(noSala);
+	    return;
+	}
+	if (!conexion.dentro.ContainsKey(nombre)) {
+	    MensajeProt noEsta = new MensajeProt {
+		Tipo = MensajeServidor.RESPONSE,
+		Hacer = MensajeHacer.LEAVE_ROOM,
+		Resultado = MensajeResultado.NOT_JOINED,
+		Extra = nombre
+	    };
+	    conexion.mandarMensaje(noEsta);
+	    return;
+	}
+	conexion.dentro.TryRemove(nombre, out _);
+	salaDestino.gente.TryRemove(cliente, out _);
+	MensajeProt aviso = new MensajeProt {
+	    Tipo = MensajeServidor.LEFT_ROOM,
+	    NombreSala = nombre,
+	    Nombre = cliente
+	};
+	foreach (var integrante in salaDestino.gente) {
+	    integrante.Value.mandarMensaje(aviso);
+	}
+	if (salaDestino.gente.IsEmpty)
+	    salas.TryRemove(nombre, out _);
     }
 
      //La respuesta ante un mensaje invalido

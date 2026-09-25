@@ -37,6 +37,9 @@ public class VistaChat {
 	Console.WriteLine("Para ver quien más está conectado en la sala: ");
 	Console.WriteLine(" |=USRSALA");
 	Console.WriteLine();
+	Console.WriteLine("Para abandonar una sala: ");
+	Console.WriteLine("|=SALAIR <nombredelasala>");
+	Console.WriteLine();
 	Console.WriteLine("Para desconectarte del chat.");
 	Console.WriteLine(" |=DESC");
 	Console.WriteLine();
@@ -108,6 +111,12 @@ public class VistaChat {
 		Console.WriteLine($"  {cliente.Key} - {cliente.Value}");
 	    }
 	}
+	Console.WriteLine();
+    }
+
+    //Muestra cuando alguien abandona una sala
+    public void saleSala(string? cliente, string? sala) {
+	Console.WriteLine($"\n[SALA: {sala}] {cliente} ha abandonado la sala.");
 	Console.WriteLine();
     }
     

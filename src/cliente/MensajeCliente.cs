@@ -23,7 +23,9 @@ public enum MensajeCliente {
     JOIN_ROOM,
     JOINED_ROOM,
     ROOM_USERS,
-    ROOM_USER_LIST
+    ROOM_USER_LIST,
+    LEAVE_ROOM,
+    LEFT_ROOM
 }
 
 //Lo que queremos hacer desde el cliente
@@ -35,7 +37,8 @@ public enum MensajeHacer {
     NEW_ROOM,
     INVITE,
     JOIN_ROOM,
-    ROOM_USERS
+    ROOM_USERS,
+
 }
 
 //El resultado del servidor hacia el cliente
