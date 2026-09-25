@@ -16,6 +16,8 @@ public class ServidorProyecto1 {
     private ConcurrentDictionary<string, Conexion> clientes;
     // El estado del servidor.
     private bool estado = false;
+    // La lista de salas
+    private ConcurrentDictionary<string, Sala> salas;
 
     // Crea el servidor con el puerto dado.
     public ServidorProyecto1(int puerto) {
@@ -23,6 +25,7 @@ public class ServidorProyecto1 {
 	servidor = new TcpListener(IPAddress.Any, puerto);
 	estado = true;
 	this.clientes = new ConcurrentDictionary<string, Conexion>();
+	this.salas = new ConcurrentDictionary<string, Sala>();
     }
 
     // Inicia el servidor y escucha en el puerto.
@@ -87,13 +90,19 @@ public class ServidorProyecto1 {
 	    case MensajeServidor.DISCONNECT:
 		conexion.Desconecta();
 		break;
+	    case MensajeServidor.NEW_ROOM:
+		nuevaSala(conexion, mensaje);
+		break;
+	    case MensajeServidor.INVITE:
+		invitaSala(conexion, mensaje);
+		break;
 	    default:
 		Console.WriteLine("Accion no válida.");
 		break;
 	} 
     }
 
-    //Realiza la identificacion de usuarios.
+    //Realiza la identificacion de clientes.
     private void identificaCliente(Conexion conexion, MensajeProt mensaje) {
 	string? nombre = mensaje.Nombre;
 	if (string.IsNullOrEmpty(nombre) || nombre.Length>8) {
@@ -219,6 +228,91 @@ public class ServidorProyecto1 {
 	    };
 	    foreach (var usuario in clientes) {
 		usuario.Value.mandarMensaje(desconectado);
+	    }
+	}
+    }
+
+    //Crea una nueva sala
+    private void nuevaSala(Conexion conexion, MensajeProt mensaje) {
+	string? cliente1 = conexion.getNombre();
+	string? nombre = mensaje.NombreSala;
+	if (string.IsNullOrEmpty(nombre) || nombre.Length>16) {
+	    mensajeInvalido(conexion);
+	    return;
+	}
+	Sala salaCreada = new Sala(nombre);
+	if (salas.TryAdd(nombre, salaCreada)) {
+	    salaCreada.gente.TryAdd(cliente1, conexion);
+	    MensajeProt creado = new MensajeProt {
+		Tipo = MensajeServidor.RESPONSE,
+		Hacer = MensajeHacer.NEW_ROOM,
+		Resultado = MensajeResultado.SUCCESS,
+		Extra = nombre
+	    };
+	    conexion.mandarMensaje(creado);
+	} else {
+	    MensajeProt noCreado = new MensajeProt {
+		Tipo = MensajeServidor.RESPONSE,
+		Hacer = MensajeHacer.NEW_ROOM,
+		Resultado = MensajeResultado.ROOM_ALREADY_EXISTS,
+		Extra = nombre
+	    };
+	    conexion.mandarMensaje(noCreado);
+	}
+    }
+
+    //Hace la invitacion a un cliente para que se una a una sala
+    private void invitaSala(Conexion conexion, MensajeProt mensaje) {
+	string? nombre = mensaje.NombreSala;
+	string? cliente1 = conexion.getNombre();
+	List<string>? invitados = mensaje.NombresSala;
+	if (string.IsNullOrEmpty(nombre) || invitados==null) {
+	    mensajeInvalido(conexion);
+	    return;
+	}
+	if (!salas.TryGetValue(nombre, out Sala? salaFinal)) {
+	    MensajeProt sinSala = new MensajeProt {
+		Tipo = MensajeServidor.RESPONSE,
+		Hacer = MensajeHacer.INVITE,
+		Resultado = MensajeResultado.NO_SUCH_ROOM,
+		Extra = nombre
+	    };
+	    conexion.mandarMensaje(sinSala);
+	    return;
+	}
+	//	if (!conexion.dentro.ContainsKey(nombre)) {
+	//  MensajeProt noDentro = new MensajeProt {
+	//	Tipo = MensajeServidor.RESPONSE,
+	//	Hacer = MensajeHacer.INVITE,
+	//	Resultado = MensajeResultado.NOT_JOINED,
+	//	Extra = nombre
+	//  };
+	//  conexion.mandarMensaje(noDentro);
+	//  return;
+	//	}
+	foreach (string cliente in invitados) {
+	    if (!clientes.ContainsKey(cliente)) {
+		MensajeProt nohayUsuario = new MensajeProt {
+		Tipo = MensajeServidor.RESPONSE,
+                Hacer = MensajeHacer.INVITE,
+                Resultado = MensajeResultado.NO_SUCH_USER,
+                Extra = cliente
+		};
+		conexion.mandarMensaje(nohayUsuario);
+		return;
+	    }
+	}
+	MensajeProt invita = new MensajeProt {
+	    Tipo = MensajeServidor.INVITATION,
+	    Nombre = cliente1,
+	    NombreSala = nombre
+	};
+	foreach (string cliente in invitados) {
+	    if (clientes.TryGetValue(cliente, out Conexion? conexionFinal)){
+		if (conexionFinal.dentro.ContainsKey(nombre) || conexionFinal.invitado.ContainsKey(nombre))
+		    continue;
+		conexionFinal.invitado.TryAdd(nombre, 0);
+		conexionFinal.mandarMensaje(invita);
 	    }
 	}
     }

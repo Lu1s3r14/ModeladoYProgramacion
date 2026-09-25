@@ -40,6 +40,22 @@ public class MensajeProt {
 	set;
     }
 
+    //El nombre de la sala/cuarto
+    [JsonPropertyName("roomname")]
+    [JsonIgnore(Condition=JsonIgnoreCondition.WhenWritingNull)]
+    public string? NombreSala {
+	get;
+	set;
+    }
+
+    //La lista de nombres de clientes en una sala
+    [JsonPropertyName("usernames")]
+    [JsonIgnore(Condition=JsonIgnoreCondition.WhenWritingNull)]
+    public List<string>? NombresSala {
+	get;
+	set;
+    }
+
     //Lo que se hace en el servidor.
     [JsonPropertyName("operation")]
     [JsonConverter(typeof(JsonStringEnumConverter))]

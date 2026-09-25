@@ -2,6 +2,7 @@ using System;
 using System.IO;
 using System.Net.Sockets;
 using System.Text.Json;
+using System.Collections.Concurrent;
 
 ///Clase que maneja las conexiones del servidor
 
@@ -27,7 +28,9 @@ public class Conexion {
 	this.salida = new StreamWriter(flujo);
 	this.salida.AutoFlush = true;
 	this.estado = true;
-	this.estadoCliente = MensajeEstado.ACTIVE; //por defecto 
+	this.estadoCliente = MensajeEstado.ACTIVE; //por defecto
+	invitado = new ConcurrentDictionary<string, byte>();
+	dentro = new ConcurrentDictionary<string, byte>();
     }
 
     //Recibe mensajes de las conexiones
@@ -84,6 +87,18 @@ public class Conexion {
     //Definimos el nombre del cliente
     public void setNombre(string? name) {
 	nombreCliente = name;
+    }
+
+    //Las salas a las que puede estar invitado
+    public ConcurrentDictionary<string, byte>? invitado {
+	get;
+	private set;
+    }
+
+    //Las salas a las que puede estar dentro
+    public ConcurrentDictionary<string, byte>? dentro {
+	get;
+	private set;
     }
 
     //Hace la desconexion de una conexion
