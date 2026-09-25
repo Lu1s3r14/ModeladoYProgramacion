@@ -96,6 +96,12 @@ public class ServidorProyecto1 {
 	    case MensajeServidor.INVITE:
 		invitaSala(conexion, mensaje);
 		break;
+	    case MensajeServidor.JOIN_ROOM:
+		entrarSala(conexion, mensaje);
+		break;
+	    case MensajeServidor.ROOM_USERS:
+		listaSala(conexion, mensaje);
+		break;
 	    default:
 		Console.WriteLine("Accion no válida.");
 		break;
@@ -280,16 +286,6 @@ public class ServidorProyecto1 {
 	    conexion.mandarMensaje(sinSala);
 	    return;
 	}
-	//	if (!conexion.dentro.ContainsKey(nombre)) {
-	//  MensajeProt noDentro = new MensajeProt {
-	//	Tipo = MensajeServidor.RESPONSE,
-	//	Hacer = MensajeHacer.INVITE,
-	//	Resultado = MensajeResultado.NOT_JOINED,
-	//	Extra = nombre
-	//  };
-	//  conexion.mandarMensaje(noDentro);
-	//  return;
-	//	}
 	foreach (string cliente in invitados) {
 	    if (!clientes.ContainsKey(cliente)) {
 		MensajeProt nohayUsuario = new MensajeProt {
@@ -315,6 +311,84 @@ public class ServidorProyecto1 {
 		conexionFinal.mandarMensaje(invita);
 	    }
 	}
+    }
+
+    //Entra a la sala a la que fue invitado
+    private void entrarSala(Conexion conexion, MensajeProt mensaje) {
+	string? nombre = mensaje.NombreSala;
+	string? cliente = conexion.getNombre();
+	if (!salas.TryGetValue(nombre, out Sala? salaDestino)) {
+	    MensajeProt noSala = new MensajeProt {
+		Tipo = MensajeServidor.RESPONSE,
+		Hacer = MensajeHacer.JOIN_ROOM,
+		Resultado = MensajeResultado.NO_SUCH_ROOM,
+		Extra = nombre
+	    };
+	    conexion.mandarMensaje(noSala);
+	    return;
+	}
+	if (!conexion.invitado.ContainsKey(nombre)) {
+	    MensajeProt sinInvitacion = new MensajeProt {
+		Tipo = MensajeServidor.RESPONSE,
+		Hacer = MensajeHacer.JOIN_ROOM,
+		Resultado = MensajeResultado.NOT_INVITED,
+		Extra = nombre
+	    };
+	    conexion.mandarMensaje(sinInvitacion);
+	    return;
+	}
+	salaDestino.gente.TryAdd(cliente, conexion);
+	conexion.dentro.TryAdd(nombre, 0);
+	MensajeProt entro = new MensajeProt {
+	    Tipo = MensajeServidor.RESPONSE,
+	    Hacer = MensajeHacer.JOIN_ROOM,
+	    Resultado = MensajeResultado.SUCCESS,
+	    Extra = nombre
+	};
+	conexion.mandarMensaje(entro);
+	MensajeProt union = new MensajeProt {
+	    Tipo = MensajeServidor.JOINED_ROOM,
+	    NombreSala = nombre,
+	    Nombre = cliente
+	};
+	foreach (var gentes in salaDestino.gente) {
+	    gentes.Value.mandarMensaje(union);
+	}
+    }
+
+    //Muestra la lista de clientes en una sala
+    private void listaSala(Conexion conexion, MensajeProt mensaje) {
+	string? nombre = mensaje.NombreSala;
+	if (!salas.TryGetValue(nombre, out Sala? salaDestino)) {
+	     MensajeProt noSala = new MensajeProt {
+		Tipo = MensajeServidor.RESPONSE,
+		Hacer = MensajeHacer.ROOM_USERS,
+		Resultado = MensajeResultado.NO_SUCH_ROOM,
+		Extra = nombre
+	    };
+	     conexion.mandarMensaje(noSala);
+	     return;
+	}
+	if (!conexion.dentro.ContainsKey(nombre)) {
+	    MensajeProt noDentro = new MensajeProt {
+		Tipo = MensajeServidor.RESPONSE,
+		Hacer = MensajeHacer.ROOM_USERS,
+		Resultado = MensajeResultado.NOT_JOINED,
+		Extra = nombre
+	    };
+	    conexion.mandarMensaje(noDentro);
+	    return;
+	}
+	Dictionary<string, string> lista = new Dictionary<string, string>();
+	foreach (var gentes in salaDestino.gente) {
+	    lista.Add(gentes.Key, gentes.Value.getEstado().ToString());
+	}
+	MensajeProt listaFinal = new MensajeProt {
+	    Tipo = MensajeServidor.ROOM_USER_LIST,
+	    NombreSala = nombre,
+	    Clientes = lista
+	};
+	conexion.mandarMensaje(listaFinal);
     }
 
      //La respuesta ante un mensaje invalido

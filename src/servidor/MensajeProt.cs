@@ -15,6 +15,14 @@ public class MensajeProt {
 	set;
     }
 
+    //El nombre de la sala/cuarto
+    [JsonPropertyName("roomname")]
+    [JsonIgnore(Condition=JsonIgnoreCondition.WhenWritingNull)]
+    public string? NombreSala {
+	get;
+	set;
+    }
+
     //El usermane que el usuario se ponga
     [JsonPropertyName("username")]
     [JsonIgnore(Condition=JsonIgnoreCondition.WhenWritingNull)]
@@ -36,14 +44,6 @@ public class MensajeProt {
     [JsonIgnore(Condition=JsonIgnoreCondition.WhenWritingNull)]
     [JsonConverter(typeof(JsonStringEnumConverter))]
     public MensajeEstado? Estado {
-	get;
-	set;
-    }
-
-    //El nombre de la sala/cuarto
-    [JsonPropertyName("roomname")]
-    [JsonIgnore(Condition=JsonIgnoreCondition.WhenWritingNull)]
-    public string? NombreSala {
 	get;
 	set;
     }

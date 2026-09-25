@@ -19,7 +19,11 @@ public enum MensajeServidor {
     DISCONNECTED,
     NEW_ROOM,
     INVITE,
-    INVITATION
+    INVITATION,
+    JOIN_ROOM,
+    JOINED_ROOM,
+    ROOM_USERS,
+    ROOM_USER_LIST
 }
 
 //Lo que queremos hacer en el servidor
@@ -28,7 +32,9 @@ public enum MensajeHacer {
     INVALID,
     TEXT,
     NEW_ROOM,
-    INVITE
+    INVITE,
+    JOIN_ROOM,
+    ROOM_USERS
 }
 
 //El resultado de lo que hagamos en el servidor.
@@ -40,7 +46,8 @@ public enum MensajeResultado {
     NO_SUCH_USER,
     ROOM_ALREADY_EXISTS,
     NO_SUCH_ROOM,
-    NOT_JOINED
+    NOT_JOINED,
+    NOT_INVITED
 }
 
 //Los estados de un usuario
