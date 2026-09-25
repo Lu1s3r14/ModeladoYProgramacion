@@ -249,6 +249,7 @@ public class ServidorProyecto1 {
 	Sala salaCreada = new Sala(nombre);
 	if (salas.TryAdd(nombre, salaCreada)) {
 	    salaCreada.gente.TryAdd(cliente1, conexion);
+	    conexion.dentro.TryAdd(nombre, 0);
 	    MensajeProt creado = new MensajeProt {
 		Tipo = MensajeServidor.RESPONSE,
 		Hacer = MensajeHacer.NEW_ROOM,

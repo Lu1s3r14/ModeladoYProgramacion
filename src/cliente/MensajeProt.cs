@@ -63,6 +63,14 @@ public class MensajeProt {
 	set;
     }
 
+    //La lista de nombres de clientes en una sala
+    [JsonPropertyName("usernames")]
+    [JsonIgnore(Condition=JsonIgnoreCondition.WhenWritingNull)]
+    public List<string>? NombresSala {
+	get;
+	set;
+    }
+
     //El resultado de lo que se hará en el servidor.
     [JsonPropertyName("result")]
     [JsonConverter(typeof(JsonStringEnumConverter))]

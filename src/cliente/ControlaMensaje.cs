@@ -83,6 +83,49 @@ public class ControlaMensaje {
 	    conexion.enviar(msj);
 	    return;
 	}
+	if (linea.StartsWith("|=NSALA ")) {
+	    string sala = linea.Substring(8).Trim();
+	    MensajeProt msj = new MensajeProt {
+		Tipo = MensajeCliente.NEW_ROOM,
+		NombreSala = sala
+	    };
+	    conexion.enviar(msj);
+	    return;
+	}
+	if (linea.StartsWith("|=INVIT ")) {
+	    string sobra = linea.Substring(8).Trim();
+	    int espacio = sobra.IndexOf(' ');
+	    if (espacio != -1) {
+		string sala = sobra.Substring(0, espacio);
+		string clientes = sobra.Substring(espacio+1);
+		MensajeProt msj = new MensajeProt {
+		    Tipo = MensajeCliente.INVITE,
+		    NombreSala = sala,
+		    NombresSala = clientes.Split(',').ToList()
+		};
+		conexion.enviar(msj);
+	    }
+	    return;
+	}
+	if (linea.StartsWith("|=UNIR ")) {
+	    string sala = linea.Substring(7).Trim();
+	    MensajeProt msj = new MensajeProt {
+		Tipo = MensajeCliente.JOIN_ROOM,
+		NombreSala = sala,
+	    };
+	    conexion.enviar(msj);
+	    return;
+	}
+	if (linea.StartsWith("|=USRSALA ")) {
+	    string sala = linea.Substring(10).Trim();
+	    MensajeProt msj = new MensajeProt {
+		Tipo = MensajeCliente.ROOM_USERS,
+		NombreSala = sala
+	    };
+	    conexion.enviar(msj);
+	    return;
+	    //falta mensaje sala y salir de la sala
+	}	
 	vista.comandoDesconocido();
     }
 
@@ -109,7 +152,16 @@ public class ControlaMensaje {
 	    case MensajeCliente.RESPONSE:
 		vista.respuesta(mensaje.Hacer, mensaje.Resultado, mensaje.Extra);
 		break;
-		//falta invitacion, unirse a la sala, lista de la sala, texto de la sala y salir de sala
+		// texto de la sala y salir de sala
+	    case MensajeCliente.INVITATION:
+		vista.verInvitacion(mensaje.Nombre, mensaje.NombreSala);
+		break;
+	    case MensajeCliente.JOINED_ROOM:
+		vista.alguienLlego(mensaje.Nombre, mensaje.NombreSala);
+		break;
+	    case MensajeCliente.ROOM_USER_LIST:
+		vista.genteSala(mensaje.NombreSala, mensaje.Clientes);
+		break;
 	    case MensajeCliente.DISCONNECTED:
 		vista.seDesconecto(mensaje.Nombre);
 		break;

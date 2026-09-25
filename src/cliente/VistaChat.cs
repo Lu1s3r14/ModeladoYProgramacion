@@ -56,12 +56,12 @@ public class VistaChat {
 
     //Muestra la lista de clientes conectados.
     public void conectados(Dictionary<string, string>? clientes) {
-	Console.WriteLine("\n Ahora mismo están conectados: [Usuarios conectados]");
+	Console.WriteLine("\n Ahora mismo están conectados: ");
 	Console.WriteLine();
 	if (clientes == null)
 	    return;
 	foreach (var cliente in clientes) {
-	    Console.WriteLine($"  {cliente.Key} - " + $"{cliente.Value}");
+	    Console.WriteLine($"  {cliente.Key} - {cliente.Value}");
 	    Console.WriteLine();
 	}
     }
@@ -101,11 +101,11 @@ public class VistaChat {
     }
 
     //Muestra quienes estan en la sala
-    public void genteSala(string? sala, Dictionary? clientes) {
+    public void genteSala(string? sala, Dictionary<string, string>? clientes) {
 	Console.WriteLine($"\n Usuarios conectados en la sala '{sala}':");
 	if (clientes != null) {
 	    foreach (var cliente in clientes) {
-		Console.WriteLine(S"  {cliente.Key} - {cliente.Value}");
+		Console.WriteLine($"  {cliente.Key} - {cliente.Value}");
 	    }
 	}
 	Console.WriteLine();
