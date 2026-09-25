@@ -25,6 +25,18 @@ public class VistaChat {
 	Console.WriteLine("Para mandar un mensaje -Privado- a alguien.");
 	Console.WriteLine(" |=MSJ <nombreclientedestino> <tumensaje>");
 	Console.WriteLine();
+	Console.WriteLine("Para crear una sala: ");
+	Console.WriteLine(" |=NSALA <nombredelasala>");
+	Console.WriteLine();
+	Console.WriteLine("Para invitar alguien a una sala: ");
+	Console.WriteLine(" |=INVIT <nombredelasala> <nombrecliente>");
+	Console.WriteLine();
+	Console.WriteLine("Para unirte a una sala:   *Solo si estás invitado.");
+	Console.WriteLine(" |=UNIR <nombresala>");
+	Console.WriteLine();
+	Console.WriteLine("Para ver quien más está conectado en la sala: ");
+	Console.WriteLine(" |=USRSALA");
+	Console.WriteLine();
 	Console.WriteLine("Para desconectarte del chat.");
 	Console.WriteLine(" |=DESC");
 	Console.WriteLine();
@@ -75,7 +87,30 @@ public class VistaChat {
 	}
     }
 
-    // falta mostrar la invitacion, cuando se une, la gente de la sala, el mesaje de la sala, cundo sale de la sala/
+    //el mesaje de la sala, cundo sale de la sala/
+    //La invitacion de alguien para una sala
+    public void verInvitacion(string? cliente, string? sala) {
+	Console.WriteLine($"\n[INVITADO] {cliente} te ha invitado a unirte a la sala '{sala}'.");
+	Console.WriteLine();
+    }
+
+    //Muestra que alguien se unio a la sala
+    public void alguienLlego(string? cliente, string? sala) {
+	Console.WriteLine($"\n[SALA: {sala}] {cliente} se ha unido a la sala.");
+	Console.WriteLine();
+    }
+
+    //Muestra quienes estan en la sala
+    public void genteSala(string? sala, Dictionary? clientes) {
+	Console.WriteLine($"\n Usuarios conectados en la sala '{sala}':");
+	if (clientes != null) {
+	    foreach (var cliente in clientes) {
+		Console.WriteLine(S"  {cliente.Key} - {cliente.Value}");
+	    }
+	}
+	Console.WriteLine();
+    }
+    
 
     //Muestra cuando alguien se desconecta del servidor
     public void seDesconecto(string? cliente) {

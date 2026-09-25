@@ -16,7 +16,14 @@ public enum MensajeCliente {
     PUBLIC_TEXT,
     PUBLIC_TEXT_FROM,
     DISCONNECT,
-    DISCONNECTED
+    DISCONNECTED,
+    NEW_ROOM,
+    INVITE,
+    INVITATION,
+    JOIN_ROOM,
+    JOINED_ROOM,
+    ROOM_USERS,
+    ROOM_USER_LIST
 }
 
 //Lo que queremos hacer desde el cliente
@@ -25,6 +32,10 @@ public enum MensajeHacer {
     INVALID,
     TEXT,
     PUBLIC_TEXT,
+    NEW_ROOM,
+    INVITE,
+    JOIN_ROOM,
+    ROOM_USERS
 }
 
 //El resultado del servidor hacia el cliente
@@ -33,7 +44,11 @@ public enum MensajeResultado {
     USER_ALREADY_EXISTS,
     NOT_IDENTIFIED,
     INVALID,
-    NO_SUCH_USER
+    NO_SUCH_USER,
+    ROOM_ALREADY_EXISTS,
+    NO_SUCH_ROOM,
+    NOT_INVITED,
+    NOT_JOINED
 }
 
 //Los estados disponibles
