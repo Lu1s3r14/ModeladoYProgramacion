@@ -293,6 +293,16 @@ public class ServidorProyecto1 {
 	    conexion.mandarMensaje(sinSala);
 	    return;
 	}
+	if (!conexion.dentro.ContainsKey(nombre)) {
+	    MensajeProt noDentro = new MensajeProt{
+		Tipo = MensajeServidor.RESPONSE,
+		Hacer = MensajeHacer.INVITE,
+		Resultado = MensajeResultado.NOT_JOINED,
+		Extra = nombre
+	    };
+	    conexion.mandarMensaje(noDentro);
+	    return;
+	}
 	foreach (string cliente in invitados) {
 	    if (!clientes.ContainsKey(cliente)) {
 		MensajeProt nohayUsuario = new MensajeProt {

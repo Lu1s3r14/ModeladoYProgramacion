@@ -139,6 +139,23 @@ public class ControlaMensaje {
 	    conexion.enviar(msj);
 	    return;
 	}
+	if (linea.StartsWith("|=MSJSALA ")) {
+	    string sobra = linea.Substring(10).Trim();
+	    int espacio = sobra.IndexOf(' ');
+	    if (espacio != 1) {
+		string sala = sobra.Substring(0, espacio);
+		string texto = sobra.Substring(espacio+1);
+		MensajeProt msj = new MensajeProt {
+		    Tipo = MensajeCliente.ROOM_TEXT,
+		    NombreSala = sala,
+		    Texto = texto
+		};
+		conexion.enviar(msj);
+	    } else {
+		vista.ayuda("Uso: |=MSJSALA <nombredelasala> <tumensaje>");
+	    }
+	    return;
+	}
 	vista.comandoDesconocido();
     }
 
@@ -165,7 +182,6 @@ public class ControlaMensaje {
 	    case MensajeCliente.RESPONSE:
 		vista.respuesta(mensaje.Hacer, mensaje.Resultado, mensaje.Extra);
 		break;
-		// texto de la sala y salir de sala
 	    case MensajeCliente.INVITATION:
 		vista.verInvitacion(mensaje.Nombre, mensaje.NombreSala);
 		break;
@@ -180,6 +196,9 @@ public class ControlaMensaje {
 		break;
 	    case MensajeCliente.DISCONNECTED:
 		vista.seDesconecto(mensaje.Nombre);
+		break;
+	    case MensajeCliente.ROOM_TEXT_FROM:
+		vista.textoSala(mensaje.NombreSala, mensaje.Nombre, mensaje.Texto);
 		break;
 	}
     }

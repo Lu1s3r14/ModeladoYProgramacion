@@ -40,6 +40,9 @@ public class VistaChat {
 	Console.WriteLine("Para abandonar una sala: ");
 	Console.WriteLine("|=SALAIR <nombredelasala>");
 	Console.WriteLine();
+	Console.WriteLine("Para mandar mensaje a una sala en la que estés: ");
+	Console.WriteLine("|=MSJSALA <nombredelasala> <tumensaje>");
+	Console.WriteLine();
 	Console.WriteLine("Para desconectarte del chat.");
 	Console.WriteLine(" |=DESC");
 	Console.WriteLine();
@@ -83,7 +86,7 @@ public class VistaChat {
 
     //muestra el resultado de hacer algo
     public void respuesta(MensajeHacer? tipo, MensajeResultado? resultado, string? extra) {
-	Console.WriteLine($"\n[OP RESULTADO] " + $"{tipo}:{resultado}");
+	Console.WriteLine($"\n[OP RESULTADO] " + $"{tipo}: {resultado}");
 	Console.WriteLine();
 	if (!string.IsNullOrEmpty(extra)) {
 	    Console.WriteLine($"  {extra}");
@@ -117,6 +120,12 @@ public class VistaChat {
     //Muestra cuando alguien abandona una sala
     public void saleSala(string? cliente, string? sala) {
 	Console.WriteLine($"\n[SALA: {sala}] {cliente} ha abandonado la sala.");
+	Console.WriteLine();
+    }
+
+    //Muestra el mensaje en la sala
+    public void textoSala(string? sala, string? cliente, string? texto) {
+	Console.WriteLine($"\n[SALA: {sala}] " + $"{cliente}: {texto}");
 	Console.WriteLine();
     }
     
