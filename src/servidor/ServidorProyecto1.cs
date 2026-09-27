@@ -439,7 +439,7 @@ public class ServidorProyecto1 {
     //Manda un mensaje (texto) a una sala
     private void textoSala(Conexion conexion, MensajeProt mensaje) {
 	string? nombre = mensaje.NombreSala;
-	string? mensaje = mensaje.Texto;
+	string? mensajeSala = mensaje.Texto;
 	string? cliente = conexion.getNombre();
 	if (!salas.TryGetValue(nombre, out Sala? salaDestino)) {
 	    MensajeProt sinSala = new MensajeProt {
@@ -465,7 +465,7 @@ public class ServidorProyecto1 {
 	    Tipo = MensajeServidor.ROOM_TEXT_FROM,
 	    NombreSala = nombre,
 	    Nombre = cliente,
-	    Texto = texto
+	    Texto = mensajeSala
 	};
 	foreach (var clientes in salaDestino.gente) {
 	    //if (clientes.Key == nombre) continue; para que no se le mande a quien lo escribe
